@@ -11,8 +11,8 @@
 Java may sound familiar if you are a fan of video games. In 2011, Minecraft was developed using Java. Minecraft is one of the best-selling video games of all time and one of the most popular games based on Java. In 2014, Microsoft bought Minecraft and Mojang for 2.5 billion. This might lead you to believe that developing games with Java is a good idea.
 In this repository, I'll break down what Java game programming is by building some game prototypes to see if I should pick it up to start a career as a game designer or game programmer.
 
--Acceleration  
-<img src=https://github.com/danipedro2006/JavaScript-Games-programming/blob/default/acceleration/cwHLrlmTMX.gif width="300" height="200">  
+-Pinball prototype  
+<img src=https://github.com/danipedro2006/Java-Games-Programming/blob/master/Pinball/q3KLq1erYJ.gif width="400" height="600">  
 
 
 ## Technologies
