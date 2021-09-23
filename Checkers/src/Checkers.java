@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -14,15 +16,14 @@ public class Checkers extends JFrame implements MouseListener {
 	public int checkersPerRow = 8;
 	public int checkersPerCol = 8;
 	public int size;
-	public int firstPlayer = 1;
-	public int secondPlayer = 2;
+	public int firstPlayerId = 1;
+	public int secondPlayerId = 2;
 	public int firstPlayerPieces = 8;
 	public int secondPlayerPieces = 8;
 
-
 	public Checkers() {
 		int width = 500;
-		this.setSize(width+20, width+40);
+		this.setSize(width + 20, width + 40);
 		this.setResizable(false);
 		this.setTitle("Checkers");
 		this.setLocationRelativeTo(null);
@@ -66,6 +67,11 @@ public class Checkers extends JFrame implements MouseListener {
 					LineBorder line = new LineBorder(color, 100, true);
 					jLabelCheckers[i][j].setBorder(line);
 					this.add(jLabelCheckers[i][j]);
+					jLabelCheckers[i][j].addMouseListener(new MouseAdapter() {
+						public void mouseRelease(MouseEvent evt) {
+							dropCheckers(evt);
+						}
+					});
 				}
 			}
 
@@ -78,12 +84,108 @@ public class Checkers extends JFrame implements MouseListener {
 				jLabelCells[i][j].setBackground((i + j) % 2 == 0 ? Color.WHITE : Color.BLACK);
 				jLabelCells[i][j].setOpaque(true);
 				jLabelCells[i][j].setLocation(i * size, j * size);
-				jLabelCells[i][j].setSize(size,size);
+				jLabelCells[i][j].setSize(size, size);
 				jLabelCells[i][j].setVisible(true);
 				this.add(jLabelCells[i][j]);
 			}
 		}
 		this.setLayout(null);
+	}
+
+	public boolean canMove(int sourceRow, int sourceCol, int destRow, int destCol) {
+
+		if (destRow >= 0 && destRow < checkersPerRow && destCol >= 0 && destCol < checkersPerRow
+				&& cellState[destRow][destCol] == 0
+				&& (sourceRow + 1 == destRow && sourceCol + 1 == destCol
+						|| sourceRow + 1 == destRow && sourceCol - 1 == destCol
+						|| sourceRow - 1 == destRow && sourceCol + 1 == destCol
+						|| sourceRow - 1 == destRow && sourceCol - 1 == destCol
+						|| sourceRow + 2 == destRow && destRow + 2 == destCol
+						|| cellState[destRow + 1][destCol + 1] != 0
+						|| sourceRow + 2 == destRow && destRow - 2 == destCol
+						|| cellState[destRow + 1][destCol - 1] != 0
+						|| sourceRow - 2 == destRow && destRow + 2 == destCol
+						|| cellState[destRow - 1][destCol + 1] != 0
+						|| sourceRow - 2 == destRow && destRow - 2 == destCol
+						|| cellState[destRow - 1][destCol - 1] != 0)) {
+			return true;
+		}
+		return false;
+	}
+
+	public void moveChecker(int sourceRow, int sourceCol, int destRow, int destCol) {
+		int secondPlayerCellState=cellState[destRow][destCol]==1 ? 2:1;
+		jLabelCheckers[destRow][destCol].move(jLabelCells[sourceRow][sourceCol].getX()+size/4, jLabelCells[sourceRow][sourceCol].getY()+size/4);
+		jLabelCheckers[sourceRow][sourceCol]=jLabelCheckers[destRow][destCol];
+		jLabelCheckers[destRow][destCol]=null;
+		jLabelCells[sourceRow][sourceCol]=jLabelCells[destRow][destCol];
+		//jLabelCells[destRow][destCol]=0;
+		
+		if(destRow+2==sourceRow && destCol+2==sourceCol && cellState[destRow+1][destCol+1]==secondPlayerCellState) {
+			
+				if(cellState[destRow+1][destCol+1]==firstPlayerId) {
+					firstPlayerPieces--;
+				}
+				else {
+					secondPlayerPieces--;
+				}
+				cellState[destRow][destCol]=0;
+				this.remove(jLabelCheckers[destRow+1][destCol=1]);
+			}
+		
+		//---------------
+		
+		if(destRow+2==sourceRow && destCol-2==sourceCol && cellState[destRow+1][destCol-1]==secondPlayerCellState) {
+			
+				if(cellState[destRow+1][destCol-1]==firstPlayerId) {
+					firstPlayerPieces--;
+				}
+				else {
+					secondPlayerPieces--;
+				}
+				cellState[destRow][destCol]=0;
+				this.remove(jLabelCheckers[destRow+1][destCol-1]);
+			}
+		//-------------------
+		
+		if(destRow-2==sourceRow && destCol+2==sourceCol && cellState[destRow-1][destCol+1]==secondPlayerCellState) {
+			
+			if(cellState[destRow-1][destCol+1]==firstPlayerId) {
+				firstPlayerPieces--;
+			}
+			else {
+				secondPlayerPieces--;
+			}
+			cellState[destRow][destCol]=0;
+			this.remove(jLabelCheckers[destRow-1][destCol+1]);
+		}
+		//---------------------
+		
+		if(destRow-2==sourceRow && destCol-2==sourceCol && cellState[destRow-1][destCol-1]==secondPlayerCellState) {
+			
+			if(cellState[destRow-1][destCol-1]==firstPlayerId) {
+				firstPlayerPieces--;
+			}
+			else {
+				secondPlayerPieces--;
+			}
+			cellState[destRow][destCol]=0;
+			this.remove(jLabelCheckers[destRow-1][destCol-1]);
+		}
+		}
+
+	private void dropCheckers(MouseEvent evt) {
+		Component source=evt.getComponent();
+		int sourceRow=(evt.getX()+source.getX())/size;
+		int sourceCol=(evt.getY()+source.getY())/size;
+		int destRow=source.getX();
+		int destCol=source.getY();
+		if(
+			cellState[destRow][destCol]==firstPlayerId &&
+			canMove(destRow, destCol, sourceRow, sourceCol){
+				move(destRow, destCol, sourceRow, sourceCol);
+			}
+				)
 	}
 
 	@Override
