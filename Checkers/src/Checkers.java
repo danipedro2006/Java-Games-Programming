@@ -3,9 +3,12 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
 
 public class Checkers extends JFrame implements MouseListener {
@@ -63,18 +66,20 @@ public class Checkers extends JFrame implements MouseListener {
 					jLabelCheckers[i][j].setLocation(i * size + size / 4, j * size + size / 4);
 					jLabelCheckers[i][j].setSize(size / 2, size / 2);
 					jLabelCheckers[i][j].setVisible(true);
-
+					 
+					jLabelCheckers[i][j].addMouseListener(
+							new MouseAdapter() {
+								public void mouseReleased(MouseEvent evt) {
+							dropCheckers(evt);
+						}
+					}
+					);
+					
 					LineBorder line = new LineBorder(color, 100, true);
 					jLabelCheckers[i][j].setBorder(line);
 					this.add(jLabelCheckers[i][j]);
-					jLabelCheckers[i][j].addMouseListener(new MouseAdapter() {
-						public void mouseRelease(MouseEvent evt) {
-							dropCheckers(evt);
-						}
-					});
 				}
 			}
-
 		}
 
 		for (int i = 0; i < checkersPerRow; i++) {
@@ -92,133 +97,170 @@ public class Checkers extends JFrame implements MouseListener {
 		this.setLayout(null);
 	}
 
-	public boolean canMove(int sourceRow, int sourceCol, int destRow, int destCol) {
-
-		if (destRow >= 0 && destRow < checkersPerRow && destCol >= 0 && destCol < checkersPerRow
-				&& cellState[destRow][destCol] == 0
-				&& (sourceRow + 1 == destRow && sourceCol + 1 == destCol
-						|| sourceRow + 1 == destRow && sourceCol - 1 == destCol
-						|| sourceRow - 1 == destRow && sourceCol + 1 == destCol
-						|| sourceRow - 1 == destRow && sourceCol - 1 == destCol
-						|| sourceRow + 2 == destRow && destRow + 2 == destCol
-						|| cellState[destRow + 1][destCol + 1] != 0
-						|| sourceRow + 2 == destRow && destRow - 2 == destCol
-						|| cellState[destRow + 1][destCol - 1] != 0
-						|| sourceRow - 2 == destRow && destRow + 2 == destCol
-						|| cellState[destRow - 1][destCol + 1] != 0
-						|| sourceRow - 2 == destRow && destRow - 2 == destCol
-						|| cellState[destRow - 1][destCol - 1] != 0)) {
+	public boolean canMove(int e, int f, int i, int j
+			) {
+		if (i >= 0 && i < checkersPerRow 
+				&& j >= 0 && j < checkersPerRow
+				&& cellState[i][j] == 0
+				&& 		  (e + 1 == i && f + 1 == j
+						|| e + 1 == i && f - 1 == j
+						|| e - 1 == i && f + 1 == j
+						|| e - 1 == i && f - 1 == j
+						|| e + 2 == i && f + 2 == j	&& cellState[e + 1][f + 1] != 0
+						|| e + 2 == i && f - 2 == j	&& cellState[e + 1][f - 1] != 0
+						|| e - 2 == i && f + 2 == j	&& cellState[e - 1][f + 1] != 0
+						|| e - 2 == i && f - 2 == j	&& cellState[e - 1][f - 1] != 0)) 
+		{
 			return true;
 		}
 		return false;
 	}
 
-	public void moveChecker(int sourceRow, int sourceCol, int destRow, int destCol) {
-		int secondPlayerCellState=cellState[destRow][destCol]==1 ? 2:1;
-		jLabelCheckers[destRow][destCol].move(jLabelCells[sourceRow][sourceCol].getX()+size/4, jLabelCells[sourceRow][sourceCol].getY()+size/4);
-		jLabelCheckers[sourceRow][sourceCol]=jLabelCheckers[destRow][destCol];
-		jLabelCheckers[destRow][destCol]=null;
-		jLabelCells[sourceRow][sourceCol]=jLabelCells[destRow][destCol];
-		//jLabelCells[destRow][destCol]=0;
+	public void moveChecker(int e, int f, int i, int j) {
+		int secondPlayerCellState=cellState[i][j]==1 ? 2:1;
+		jLabelCheckers[e][f].move(jLabelCells[i][j].getX()+size/4, jLabelCells[i][j].getY()+size/4);
+		jLabelCheckers[i][j]=jLabelCheckers[e][f];
+		jLabelCheckers[e][f]=null;
+		 cellState[i][j]=cellState[e][f];
+		 cellState[e][f]=0;
 		
-		if(destRow+2==sourceRow && destCol+2==sourceCol && cellState[destRow+1][destCol+1]==secondPlayerCellState) {
+		if(e+2==i && f+2==j && cellState[e+1][f+1]==secondPlayerCellState) {
 			
-				if(cellState[destRow+1][destCol+1]==firstPlayerId) {
+				if(cellState[e+1][f+1]==firstPlayerId) {
 					firstPlayerPieces--;
 				}
 				else {
 					secondPlayerPieces--;
 				}
-				cellState[destRow][destCol]=0;
-				this.remove(jLabelCheckers[destRow+1][destCol=1]);
+				cellState[e+1][f+1]=0;
+				this.remove(jLabelCheckers[e+1][f+1]);
 			}
 		
-		//---------------
 		
-		if(destRow+2==sourceRow && destCol-2==sourceCol && cellState[destRow+1][destCol-1]==secondPlayerCellState) {
+		if(e+2==i && f-2==j && cellState[e+1][f-1]==secondPlayerCellState) {
 			
-				if(cellState[destRow+1][destCol-1]==firstPlayerId) {
+				if(cellState[e+1][f-1]==firstPlayerId) {
 					firstPlayerPieces--;
 				}
 				else {
 					secondPlayerPieces--;
 				}
-				cellState[destRow][destCol]=0;
-				this.remove(jLabelCheckers[destRow+1][destCol-1]);
+				cellState[e+1][f-1]=0;
+				this.remove(jLabelCheckers[e+1][f-1]);
 			}
-		//-------------------
 		
-		if(destRow-2==sourceRow && destCol+2==sourceCol && cellState[destRow-1][destCol+1]==secondPlayerCellState) {
+		if(e-2==i && f+2==j && cellState[e-1][f+1]==secondPlayerCellState) {
 			
-			if(cellState[destRow-1][destCol+1]==firstPlayerId) {
+			if(cellState[e-1][f+1]==firstPlayerId) {
 				firstPlayerPieces--;
 			}
 			else {
 				secondPlayerPieces--;
 			}
-			cellState[destRow][destCol]=0;
-			this.remove(jLabelCheckers[destRow-1][destCol+1]);
+			cellState[e-1][f+1]=0;
+			this.remove(jLabelCheckers[i-1][j+1]);
 		}
-		//---------------------
 		
-		if(destRow-2==sourceRow && destCol-2==sourceCol && cellState[destRow-1][destCol-1]==secondPlayerCellState) {
+		if(e-2==i && f-2==j && cellState[e-1][f-1]==secondPlayerCellState) {
 			
-			if(cellState[destRow-1][destCol-1]==firstPlayerId) {
+			if(cellState[e-1][f-1]==firstPlayerId) {
 				firstPlayerPieces--;
 			}
 			else {
 				secondPlayerPieces--;
 			}
-			cellState[destRow][destCol]=0;
-			this.remove(jLabelCheckers[destRow-1][destCol-1]);
+			cellState[e-1][f-1]=0;
+			this.remove(jLabelCheckers[i-1][j-1]);
 		}
 		}
 
 	private void dropCheckers(MouseEvent evt) {
 		Component source=evt.getComponent();
-		int sourceRow=(evt.getX()+source.getX())/size;
-		int sourceCol=(evt.getY()+source.getY())/size;
-		int destRow=source.getX();
-		int destCol=source.getY();
-		if(
-			cellState[destRow][destCol]==firstPlayerId &&
-			canMove(destRow, destCol, sourceRow, sourceCol){
-				move(destRow, destCol, sourceRow, sourceCol);
+		int i=(evt.getX()+source.getX())/size;
+		int j=(evt.getY()+source.getY())/size;
+		int e=source.getX()/size;
+		int f=source.getY()/size;
+		
+		if(cellState[e][f]==firstPlayerId && canMove(e, f, i, j))
+			{
+			moveChecker(e, f, i, j);
+			  if(secondPlayerPieces==0) { 
+				  JOptionPane.showMessageDialog(null, "Ai castigat!","Jocul s-a terminat",JOptionPane.INFORMATION_MESSAGE); 
+				  }
+			 		 System.exit(0);
 			}
-				)
+		
+		int moveDirections[][]= {{-1,-1},{-1,+1},{+1,-1},{+1,+1},{-2,-2},{-2,+2},{+2,-2},{+2,+2}};
+		Vector<CheckersMove> moves=new Vector<CheckersMove>();
+		for(int m=0;m<checkersPerRow;m++) {
+			for(int n=0;n<checkersPerCol;n++) {
+				if (cellState[m][n]==secondPlayerId) {
+					for(int k=0;k<moveDirections.length;k++) {
+						if (canMove(m,n,m+moveDirections[k][0],n+moveDirections[k][1])) {
+							CheckersMove move=new CheckersMove();
+							move.srcX=m;
+							move.srcY=n;
+							move.destX=m+moveDirections[k][0];
+							move.destY=n+moveDirections[k][1];
+							moves.add(move);
+							
+						}
+					}
+				}
+			}
+		}
+		
+		CheckersMove selectedMove=moves.get((int)(Math.random()*moves.size()));
+		moveChecker(selectedMove.srcX,selectedMove.srcY,selectedMove.destX,selectedMove.destY);
+		if(firstPlayerPieces==0) {
+			JOptionPane.showMessageDialog(null, "Ai pierdut!","Jocul s-a terminat", JOptionPane.INFORMATION_MESSAGE);
+			System.exit(0);
+		}
+				repaint();
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void mouseClicked(MouseEvent e) {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void mouseEntered(MouseEvent e) {
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void mouseExited(MouseEvent e) {
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void mousePressed(MouseEvent e) {
 	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void mouseReleased(MouseEvent e) {
 	}
+	
 
-	public static void main(String[] args) {
-		new Checkers().setVisible(true);
-	}
+	public static void main(String args[]) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                    
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Checkers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Checkers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Checkers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Checkers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Checkers().setVisible(true);
+            }
+        });
+    }
 }
