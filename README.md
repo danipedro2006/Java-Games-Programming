@@ -16,7 +16,7 @@ In this repository, I'll break down what Java game programming is by building so
 <img src=https://github.com/danipedro2006/Java-Games-Programming/blob/master/Pinball/q3KLq1erYJ.gif width="200" height="300">  
 
 -Checkers  
-<img src=https://github.com/danipedro2006/Java-Games-Programming/blob/master/Checkers/scrcapture.pngwidth="200" height="300">
+<img src=https://github.com/danipedro2006/Java-Games-Programming/blob/master/Checkers/scrcapture.png width="200" height="300">
 
 ## Technologies
 * Java 1.8
