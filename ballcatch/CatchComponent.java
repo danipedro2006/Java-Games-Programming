@@ -17,7 +17,7 @@ public class CatchComponent extends JComponent   implements KeyListener{
 	Bucket bucket;
 	
 	public CatchComponent() {
-		this.ball=new Ball(10, 10,true);
+		this.ball=new Ball(10, 10);
 		this.bucket=new Bucket(50,100);
 		
 		Timer timer= new Timer(50, new ActionListener() {
@@ -25,6 +25,7 @@ public class CatchComponent extends JComponent   implements KeyListener{
 			public void actionPerformed(ActionEvent e) {
  				
  				ball=ball.moveDown();
+ 				testBallCatch();
  				repaint();
 				
 			}
@@ -59,6 +60,14 @@ public class CatchComponent extends JComponent   implements KeyListener{
 		super.paintComponent(g);
 		ball.draw(g);
 		bucket.draw(g);
+	}
+	
+	public void testBallCatch() {
+		if(bucket.contains(ball)) {
+			if(ball.isGood()) {
+				System.out.println("Success!");
+			}
+		}
 	}
 public static void main(String[] args) {
 	

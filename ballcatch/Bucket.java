@@ -47,7 +47,7 @@ public class Bucket {
 		return new Rectangle(x-WIDTH/2, y-HEIGHT/2,WIDTH,HEIGHT);
 	}
 	
-	public boolean containsBall(Ball b) {
+	public boolean contains(Ball b) {
 		return getBounds().contains(b.getBounds());
 	}
 	
