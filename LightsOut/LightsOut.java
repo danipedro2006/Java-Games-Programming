@@ -32,7 +32,7 @@ public class LightsOut  extends JFrame implements ActionListener{
 				int random=(int) (Math.random()*3);
 				JButton button=new JButton();
 				gameButtons[i][j]=button;
-				button.setName(" "+i+j);
+				button.setName(""+i+j);
 				button.setBackground(Color.BLACK);
 				if(random==2) {
 					backgroundColor(button);
@@ -61,9 +61,6 @@ public class LightsOut  extends JFrame implements ActionListener{
 		controls.add(manual, "South");
 		
 		mainPanel.add(controls,"South");
-		
-		
-		
 	}
 	
 
@@ -79,9 +76,23 @@ public class LightsOut  extends JFrame implements ActionListener{
 
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent buttonpres) {
+		JButton button=(JButton) buttonpres.getSource();
+		//System.out.println(button.getName());//charAt(0) col, charAt(1) row ex 22 row 2  col 2
+		String location=button.getName();
+		char colChar=location.charAt(0);
+		char rowChar=location.charAt(1);
+		System.out.println(colChar+ " "+rowChar);
 		
+		 int col=Character.getNumericValue(colChar); int
+		 row=Character.getNumericValue(rowChar); System.out.println(row);
+		  System.out.println(col);
+		 
+		
+		JButton selectedButton=new JButton();
+		selectedButton=gameButtons[col][row];
+		
+		backgroundColor(selectedButton);
 	}
 	
 	
