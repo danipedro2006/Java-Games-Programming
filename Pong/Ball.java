@@ -16,6 +16,9 @@ public class Ball implements Runnable{
 	int p2score=0;
 	Rectangle b;
 	
+	Paddle paddle1=new Paddle(12, 25, 1);
+	Paddle paddle2=new Paddle(480, 25, 2);
+	
 	public Ball(int x, int y){
 		System.out.println("ball created");
 		this.x=x;
