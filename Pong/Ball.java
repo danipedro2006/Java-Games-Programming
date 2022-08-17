@@ -33,7 +33,7 @@ public class Ball implements Runnable{
 	}
 	
 	public void move() {
-		
+		collision();
 		b.x+=xDirection;
 		b.y+=yDirection;
 		
@@ -52,6 +52,16 @@ public class Ball implements Runnable{
 		}
 		if(b.y>=385) {
 			yDirection=-1;
+		}
+		
+	}
+
+	private void collision() {
+		if (b.intersects(paddle1.paddle)){
+			xDirection*=-1;
+		}
+		if (b.intersects(paddle2.paddle)){
+			xDirection*=-1;
 		}
 		
 	}

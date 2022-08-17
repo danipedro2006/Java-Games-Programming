@@ -45,6 +45,7 @@ public class Paddle extends KeyAdapter implements Runnable {
 	}
 
 	private void move() {
+		
 		paddle.y += yDirection;
 
 		if (paddle.y <= 15)
